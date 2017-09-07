@@ -36,10 +36,10 @@ Usage of ./later:
   POST /
   {
   	"topic":"order",
-  	"delay":15, // second
-  	"retry":3,  // max retry 3 times, interval 10,20,40... seconds
-  	"callback":"http://127.0.0.1:8888/", // http post to target url
-  	"content":"hello" // content to post
+  	"delay":15, # second
+  	"retry":3,  # max retry 3 times, interval 10,20,40... seconds
+  	"callback":"http://127.0.0.1:8888/", # http post to target url
+  	"content":"hello" # content to post
   }
   Response:
   {
@@ -63,7 +63,7 @@ Usage of ./later:
   }
   Response:
   {
-      "code":100 // 100: success,101: too many request,other: fail
+      "code":100 # 100: success,101: too many request,other: fail
   }
   ```
 
