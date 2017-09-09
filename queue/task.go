@@ -78,7 +78,7 @@ func getTask(id string) (*Task, error) {
 func getTasks(bucket string, begin int64, end int64) ([]string, error) {
 	c := pool.Get()
 	defer c.Close()
-	return redis.Strings(c.Do("ZRANGEBYSCORE", bucket, begin, end, "LIMIT", "0", fmt.Sprintf("%v", ZrangeOffset)))
+	return redis.Strings(c.Do("ZRANGEBYSCORE", bucket, begin, end, "LIMIT", "0", fmt.Sprintf("%v", ZrangeCount)))
 }
 
 func delayToUnack(id string, score int64) (bool, error) {
