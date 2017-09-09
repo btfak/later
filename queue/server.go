@@ -6,16 +6,19 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/facebookgo/grace/gracehttp"
 	"github.com/garyburd/redigo/redis"
 	"github.com/pborman/uuid"
 	log "github.com/sirupsen/logrus"
 )
 
 func ListenAndServe(addr string) error {
-	http.HandleFunc("/create", createHandler)
-	http.HandleFunc("/delete", deleteHandler)
-	http.HandleFunc("/query", queryHandler)
-	return http.ListenAndServe(addr, nil)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/create", createHandler)
+	mux.HandleFunc("/delete", deleteHandler)
+	mux.HandleFunc("/query", queryHandler)
+	server := http.Server{Addr: addr, Handler: mux}
+	return gracehttp.Serve(&server)
 }
 
 type createRequest struct {
