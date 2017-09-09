@@ -1,4 +1,4 @@
-## later
+## later ![](https://travis-ci.org/btfak/later.svg?branch=master)
 later is a redis base delay queue
 
 
@@ -26,14 +26,15 @@ Usage of ./later:
 - performance
 
 
-
 ### Frontend API
+
+Response http code: **200** success, **400** request invalid, **404** task not found, **500** internal error
 
 - Create Task
 
   ```
   Request:
-  POST /
+  POST /create
   {
   	"topic":"order",
   	"delay":15, // second
@@ -47,7 +48,36 @@ Usage of ./later:
   }
   ```
 
-  ​
+- Delete Task
+
+  ```
+  Request:
+  POST /delete
+  {
+  	"id":"35adbde5-77c4-4d65-adac-0082d91f2554"
+  }
+  ```
+
+- Query Task
+
+  ```
+  Request:
+  POST /query
+  {
+  	"id":"35adbde5-77c4-4d65-adac-0082d91f2554"
+  }
+  Response:
+  {
+      "id": "cb9aefdd-5bd1-4bf3-8c94-1ed5c2ea638e",
+      "topic": "order",
+      "execute_time": 1504934230,
+      "max_retry": 1,
+      "has_retry": 0,
+      "callback": "http://127.0.0.1:8888/success",
+      "content": "hello",
+      "creat_time": 1504934220
+  }
+  ```
 
 ### Backend API
 

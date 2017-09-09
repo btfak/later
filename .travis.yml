@@ -1,0 +1,14 @@
+language: go
+go:
+  - 1.7.x
+  - 1.8.x
+  - 1.9.x
+env:
+  - GOARCH=amd64
+  - GOARCH=386
+sudo: false
+script:
+  - go build
+  - go test ./...  
+notifications:
+  email: false
