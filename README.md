@@ -1,12 +1,10 @@
 ## later ![](https://travis-ci.org/btfak/later.svg?branch=master)
 later is a redis base delay queue
 
-
-
 ### Usege
-
+golang version: 1.7+
 ```
-go install github.com/btfak/later
+go build github.com/btfak/later
 $: ./later -h
 Usage of ./later:
   -address string
@@ -15,15 +13,13 @@ Usage of ./later:
     	redis address (default "redis://127.0.0.1:6379/0")
 ```
 
-
-
 ### Feature
 
 - Delay push message to target
 - At-lease-once delivery
 - Fail and retry
-- reliable
-- performance
+- Reliable
+- Performance
 
 
 ### Frontend API
