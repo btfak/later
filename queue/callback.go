@@ -5,17 +5,16 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"time"
 
 	log "github.com/sirupsen/logrus"
 )
 
-var HttpClient = &http.Client{
-	Timeout: time.Second * 3,
+var httpClient = &http.Client{
+	Timeout: CallbackTTR,
 	Transport: &http.Transport{
-		MaxIdleConnsPerHost: 10,
-		MaxIdleConns:        1024,
-		IdleConnTimeout:     time.Minute * 5,
+		MaxIdleConnsPerHost: MaxIdleConnsPerHost,
+		MaxIdleConns:        MaxIdleConns,
+		IdleConnTimeout:     IdleConnTimeout,
 	},
 }
 
@@ -47,7 +46,7 @@ func post(task *Task) (int, error) {
 	}
 
 	content := bytes.NewBuffer(data)
-	resp, err := HttpClient.Post(task.Callback, "application/json", content)
+	resp, err := httpClient.Post(task.Callback, "application/json", content)
 	if err != nil {
 		log.WithError(err).Error("http post fail")
 		return 0, err
