@@ -19,7 +19,7 @@ func delayWorker() {
 	for _ = range ticker.C {
 		go func() {
 			begin := time.Now().Add(-time.Duration(TaskTTL) * time.Second).Unix()
-			end := time.Now().Unix()
+			end := time.Now().Add(-CallbackTTR).Unix()
 			ids, err := getTasks(DelayBucket, begin, end)
 			if err != nil {
 				log.WithError(err).Error("get tasks fail")

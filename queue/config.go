@@ -13,10 +13,18 @@ var (
 )
 
 var (
-	TaskTTL             = 24 * 3600
-	ZrangeCount         = 20
+	TaskTTL       = 24 * 3600
+	ZrangeCount   = 20
+	RetryInterval = 10 //second
+
 	DelayWorkerInterval = 100 * time.Millisecond
 	UnackWorkerInterval = 1000 * time.Millisecond
 	ErrorWorkerInterval = 1000 * time.Millisecond
-	RetryInterval       = 10 //second
+)
+
+var (
+	CallbackTTR         = 3 * time.Second //time to run
+	MaxIdleConnsPerHost = 10
+	MaxIdleConns        = 1024
+	IdleConnTimeout     = time.Minute * 5
 )
