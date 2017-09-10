@@ -35,21 +35,8 @@ type createResponse struct {
 }
 
 func createHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		w.WriteHeader(400)
-		return
-	}
 	var request createRequest
-	data, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.WithError(err).Error("io read from frontend fail")
-		w.WriteHeader(500)
-		return
-	}
-	err = json.Unmarshal(data, &request)
-	if err != nil {
-		log.WithError(err).Error("json unmarshal fail")
-		w.WriteHeader(400)
+	if ok := decode(w, r, &request); !ok {
 		return
 	}
 	task := &Task{
@@ -61,20 +48,14 @@ func createHandler(w http.ResponseWriter, r *http.Request) {
 		Content:     request.Content,
 		CreatTime:   time.Now().Unix(),
 	}
-	err = createTask(task)
+	err := createTask(task)
 	if err != nil {
 		log.WithError(err).Error("create task fail")
 		w.WriteHeader(500)
 		return
 	}
 	response := createResponse{ID: task.ID}
-	respData, err := json.Marshal(response)
-	if err != nil {
-		log.WithError(err).Error("json marshal fail")
-		w.WriteHeader(500)
-		return
-	}
-	w.Write(respData)
+	write(w, response)
 }
 
 type deleteRequest struct {
@@ -82,28 +63,15 @@ type deleteRequest struct {
 }
 
 func deleteHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		w.WriteHeader(400)
-		return
-	}
 	var request deleteRequest
-	data, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.WithError(err).Error("io read from frontend fail")
-		w.WriteHeader(500)
-		return
-	}
-	err = json.Unmarshal(data, &request)
-	if err != nil {
-		log.WithError(err).Error("json unmarshal fail")
-		w.WriteHeader(400)
+	if ok := decode(w, r, &request); !ok {
 		return
 	}
 	if request.ID == "" {
 		w.WriteHeader(400)
 		return
 	}
-	err = deleteTask(request.ID)
+	err := deleteTask(request.ID)
 	if err != nil {
 		log.WithError(err).Error("delete task fail")
 		w.WriteHeader(500)
@@ -128,21 +96,8 @@ type queryResponse struct {
 }
 
 func queryHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		w.WriteHeader(400)
-		return
-	}
 	var request queryRequest
-	data, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.WithError(err).Error("io read from frontend fail")
-		w.WriteHeader(500)
-		return
-	}
-	err = json.Unmarshal(data, &request)
-	if err != nil {
-		log.WithError(err).Error("json unmarshal fail")
-		w.WriteHeader(400)
+	if ok := decode(w, r, &request); !ok {
 		return
 	}
 	if request.ID == "" {
@@ -169,7 +124,31 @@ func queryHandler(w http.ResponseWriter, r *http.Request) {
 		Content:     task.Content,
 		CreatTime:   task.CreatTime,
 	}
-	respData, err := json.Marshal(response)
+	write(w, response)
+}
+
+func decode(w http.ResponseWriter, r *http.Request, obj interface{}) bool {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(400)
+		return false
+	}
+	data, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.WithError(err).Error("io read from frontend fail")
+		w.WriteHeader(500)
+		return false
+	}
+	err = json.Unmarshal(data, obj)
+	if err != nil {
+		log.WithError(err).Error("json unmarshal fail")
+		w.WriteHeader(400)
+		return false
+	}
+	return true
+}
+
+func write(w http.ResponseWriter, obj interface{}) {
+	respData, err := json.Marshal(obj)
 	if err != nil {
 		log.WithError(err).Error("json marshal fail")
 		w.WriteHeader(500)
