@@ -105,9 +105,11 @@ Response http code: **200** success, **400** request invalid, **404** task not f
 * Error Bucket: a sorted set store task which call backend server fail
 
 **Three worker fetch tasks with time ticker**
+
 * Delay Worker: get tasks which reach execute time and move tasks from delay bucket to unack bucket, if call backend server success, delete all task data. Otherwise, move tasks from delay bucket to error bucket
 * Unack Worker: move tasks from unack bucket to delay bucket
 * Error Worker: move tasks from error bucket to delay bucket
 
 **Concurrence problem**
+
 In general, we will deploy multi instance, workers will get same task, but we judge result when move task from delay bucket to unack bucket, if `ZADD` return 1, worker move on, otherwise worker return immediately.
